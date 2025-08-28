@@ -1,5 +1,7 @@
-package com.taller.banco.domain;
+package com.taller.banco.service;
 
+import com.taller.banco.domain.Account;
+import com.taller.banco.domain.Money;
 import com.taller.banco.exception.validacionesdeentrada;
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +40,7 @@ class MoneyTests {
 
     @Test
     void depositarMontoInvalidoDebeLanzarExcepcion() {
-        Account cuenta = new Account("ABC", BigDecimal.ZERO);
+        Account cuenta = new Account("ABC", "naiker" , BigDecimal.ZERO);
         assertThrows(validacionesdeentrada.class,
                 () -> cuenta.deposit(BigDecimal.valueOf(-100)));
     }

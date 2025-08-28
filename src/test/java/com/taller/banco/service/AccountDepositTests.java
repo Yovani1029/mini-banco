@@ -1,7 +1,6 @@
 package com.taller.banco.service;
 
 import com.taller.banco.domain.Account;
-import com.taller.banco.domain.Money;
 import com.taller.banco.domain.Transaction;
 import com.taller.banco.exception.AccountNotFoundException;
 import com.taller.banco.exception.validacionesdeentrada;
@@ -26,7 +25,8 @@ class AccountDepositTests {
         repository = mock(AccountRepository.class);
         service = new BankingService(repository);
 
-        cuenta = new Account("123", BigDecimal.ZERO);
+        cuenta = new Account("123", "Naiker", BigDecimal.ZERO);
+
         when(repository.findById("123")).thenReturn(Optional.of(cuenta));
     }
 
@@ -34,7 +34,7 @@ class AccountDepositTests {
     void depositarMontoValidoAumentaSaldo() {
         cuenta.deposit(BigDecimal.valueOf(100));
 
-        assertEquals(BigDecimal.valueOf(100), cuenta.getBalance());
+        assertEquals(BigDecimal.valueOf(100).setScale(2), cuenta.getBalance());
     }
 
     @Test
@@ -51,20 +51,22 @@ class AccountDepositTests {
 
     @Test
     void depositoGeneraHistorialEnTransferencia() {
-        Account destino = new Account("456", BigDecimal.ZERO);
+        Account destino = new Account("456", "Carlos", BigDecimal.ZERO);
         when(repository.findById("456")).thenReturn(Optional.of(destino));
 
         cuenta.deposit(BigDecimal.valueOf(200));
+
         service.transfer("123", "456", BigDecimal.valueOf(100));
 
-        assertEquals(BigDecimal.valueOf(100), cuenta.getBalance());
-        assertEquals(BigDecimal.valueOf(100), destino.getBalance());
+        assertEquals(BigDecimal.valueOf(100).setScale(2), cuenta.getBalance());
+        assertEquals(BigDecimal.valueOf(100).setScale(2), destino.getBalance());
 
         Transaction t = service.getHistory().get(0);
-        assertEquals(Transaction.Type.TRANSFER, t.type());
-        assertEquals("123", t.sourceId());
-        assertEquals("456", t.targetId());
-        assertEquals(BigDecimal.valueOf(100).setScale(2), t.amount());
+
+        assertEquals(Transaction.Type.TRANSFER, t.getType());
+        assertEquals("123", t.getSourceAccountId());
+        assertEquals("456", t.getTargetAccountId());
+        assertEquals(BigDecimal.valueOf(100).setScale(2), t.getAmount());
     }
 
     @Test
