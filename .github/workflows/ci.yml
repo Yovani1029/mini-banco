@@ -2,9 +2,9 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "**" ]
+    branches: ["**"]
   pull_request:
-    branches: [ "**" ]
+    branches: ["**"]
 
 jobs:
   lint:
@@ -39,8 +39,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Run tests with coverage (JaCoCo en pom ya exige ≥90%)
-        run: mvn -B clean verify
+      - name: Run tests with coverage
+        run: mvn -B clean verify  # JaCoCo en pom exige ≥90%
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
